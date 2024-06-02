@@ -9,8 +9,7 @@ import {VRFV2PlusClient} from "@chainlink/contracts@1.1.1/src/v0.8/vrf/dev/libra
  * @title Tombola
  * @dev A contract for a lottery game where users can play by choosing a number and the winner is chosen randomly.
  */
-//VRFV2PlusWrapperConsumerBase(0xc8F13422c49909F4Ec24BF65EDFBEbe410BB9D7c),
-//0x195f15F2d49d693cE265b4fB0fdDbE15b1850Cc1
+
 contract Tombola is VRFConsumerBaseV2Plus {
     /**
      * @notice Mapping of the plays made by the players. The key is the day, the second key is the number played and the third key is the index of the play.
@@ -57,7 +56,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
     // this limit based on the network that you select, the size of the request,
     // and the processing of the callback request in the fulfillRandomWords()
     // function.
-    uint32 callbackGasLimit = 400000;
+    uint32 callbackGasLimit = 200000;
 
     // The default is 3, but you can set this higher.
     uint16 requestConfirmations = 3;
@@ -103,11 +102,12 @@ contract Tombola is VRFConsumerBaseV2Plus {
     // The gas lane to use, which specifies the maximum gas price to bump to.
     // For a list of available gas lanes on each network,
     // see https://docs.chain.link/docs/vrf/v2-5/supported-networks
-    bytes32 public keyHash =
-        0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae; // sepolia
     //bytes32 public keyHash =
-    //0xc799bd1e3bd4d1a41cd4968997a4e03dfd2a3c7c04b695881138580163f42887; // fuji
-    //bytes32 public keyHash = 0x816bedba8a50b294e5cbd47842baf240c2385f2eaf719edbd4f250a137a8c899; // Amoy
+    //    0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae; // sepolia
+    //bytes32 public keyHash =
+    //    0xc799bd1e3bd4d1a41cd4968997a4e03dfd2a3c7c04b695881138580163f42887; // fuji
+    bytes32 public keyHash =
+        0x816bedba8a50b294e5cbd47842baf240c2385f2eaf719edbd4f250a137a8c899; // Amoy
 
     error ErrorCommissionHigherThanExpected();
     error ErrorDrawAlreadyDone();
@@ -119,13 +119,12 @@ contract Tombola is VRFConsumerBaseV2Plus {
     error ErrorZeroDrawNumbersRange();
     error ErrorZeroPlayCost();
 
-    address public constant wrapperAddress =
-        0x195f15F2d49d693cE265b4fB0fdDbE15b1850Cc1;
     /**
      * @dev Constructor function for the Tombola contract.
      * @param _commission The commission percentage to be charged on each play.
      * @param _drawNumbersRange The range of numbers from which the winner will be chosen.
      * @param _playCost The cost of each play.
+     * @param _subscriptionId The subscription used in the vrf.
      */
     constructor(
         uint64 _commission,
@@ -134,9 +133,9 @@ contract Tombola is VRFConsumerBaseV2Plus {
         uint256 _subscriptionId
     )
         //ConfirmedOwner(msg.sender)
-        VRFConsumerBaseV2Plus(0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B) // Sepolia
-    //VRFConsumerBaseV2Plus(0x5C210eF41CD1a72de73bF76eC39637bB0d3d7BEE) // Fuji
-    //VRFConsumerBaseV2Plus(0x343300b5d84D444B2ADc9116FEF1bED02BE49Cf2) //Amoy
+        //VRFConsumerBaseV2Plus(0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B) // Sepolia
+        //VRFConsumerBaseV2Plus(0x5C210eF41CD1a72de73bF76eC39637bB0d3d7BEE) // Fuji
+        VRFConsumerBaseV2Plus(0x343300b5d84D444B2ADc9116FEF1bED02BE49Cf2) //Amoy
     {
         //_initializeOwner(msg.sender);
         if (_commission > 25) revert ErrorCommissionHigherThanExpected();
@@ -177,22 +176,23 @@ contract Tombola is VRFConsumerBaseV2Plus {
      * https://www.rareskills.io/post/smart-contract-security (why casting to uint256)
      * Solidity does not upcast to the final uint size
      */
-    //TODO dejarla internal luego de la prueba
     function distribute() internal {
         uint256 currentDay = (block.timestamp - 1 days) / 1 days;
-        //TEST
-        //uint256 currentDay = (block.timestamp) / 1 days;
         uint256 guessNumber = draws[currentDay];
         if (nPlaysNumberDay[currentDay][guessNumber] == 0) {
             // revert ErrorNoWinnersToday();
             emit NoWinnersToday();
             return;
         }
+        if (draws[currentDay] != 0) revert ErrorDrawAlreadyDone();
         uint256 balanceWithoutCommission = (address(this).balance *
             (uint256(100) - uint256(commission))) / uint256(100);
         uint256 amountToDistributeFinal = balanceWithoutCommission /
             nPlaysNumberDay[currentDay][guessNumber];
         for (uint256 i = 0; i < nPlaysNumberDay[currentDay][guessNumber]; ) {
+            /*payable(plays[currentDay][guessNumber][i]).transfer(
+                amountToDistributeFinal
+            );*/
             userClaim[
                 plays[currentDay][guessNumber][i]
             ] += amountToDistributeFinal;
@@ -303,11 +303,6 @@ contract Tombola is VRFConsumerBaseV2Plus {
     function generatePseudoRandom(
         bool enableNativePayment
     ) external onlyOwner returns (uint256 requestId) {
-        //TODO: UNCOMMENT FOR PRODUCTION
-        uint256 currentDay = (block.timestamp - 1 days) / 1 days;
-        //TODO
-        //uint256 currentDay = (block.timestamp) / 1 days;
-        if (draws[currentDay] != 0) revert ErrorDrawAlreadyDone();
         // Will revert if subscription is not set and funded.
         requestId = s_vrfCoordinator.requestRandomWords(
             VRFV2PlusClient.RandomWordsRequest({
@@ -340,10 +335,8 @@ contract Tombola is VRFConsumerBaseV2Plus {
     ) internal override {
         randomNumber = (_randomWords[0] % drawNumbersRange) + 1;
         emit RandomNumber(randomNumber);
-        uint256 currentDay = (block.timestamp - 1 days) / 1 days;
-        //TEST
-        //uint256 currentDay = (block.timestamp) / 1 days;
-        if (draws[currentDay] != 0) revert ErrorDrawAlreadyDone();
+        //uint256 currentDay = (block.timestamp - 1 days) / 1 days;
+        uint256 currentDay = (block.timestamp) / 1 days;
         draws[currentDay] = randomNumber;
         distribute();
         require(s_requests[_requestId].exists, "request not found");
@@ -358,9 +351,5 @@ contract Tombola is VRFConsumerBaseV2Plus {
         require(s_requests[_requestId].exists, "request not found");
         RequestStatus memory request = s_requests[_requestId];
         return (request.fulfilled, request.randomWords);
-    }
-
-    function setCallbackGasLimit(uint32 _callbackGasLimit) public onlyOwner {
-        callbackGasLimit = _callbackGasLimit;
     }
 }

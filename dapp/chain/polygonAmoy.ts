@@ -1,28 +1,25 @@
-import { defineChain } from '../frontend/node_modules/viem/utils/chain/defineChain.js'
-
-export const polygonAmoy = /*#__PURE__*/ defineChain({
-    id: 80_002,
-    name: 'Polygon Amoy',
-    network: 'polygon-Amoy',
-    nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ['https://rpc-amoy.polygon.technology'],
-      },
-      public: {
-        http: ['https://rpc-amoy.polygon.technology'],
-      },
+import { Chain } from 'wagmi'
+ 
+export const polygonAmoy = {
+  id: 80_002,
+  name: 'Polygon Amoy',
+  network: 'polygonAmoy',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'MATIC',
+    symbol: 'MATIC',
+  },
+  rpcUrls: {
+    public: { http: ['https://rpc-amoy.polygon.technology'] },
+    default: { http: ['https://rpc-amoy.polygon.technology'] },
+  },
+  blockExplorers: {
+    default: { name: 'polyscan', url: 'https://amoy.polygonscan.com' },
+  },
+  contracts: {
+    multicall3: {
+      address: '0xca11bde05977b3631167028862be2a173976ca11',
+      blockCreated: 3127388,
     },
-    blockExplorers: {
-      default: {
-        name: 'PolygonScan',
-        url: 'https://amoy.polygonscan.com',
-      },
-    },
-    contracts: {
-      multicall3: {
-        address: '0xca11bde05977b3631167028862be2a173976ca11',
-        blockCreated: 3127388,
-      },
-    },
-  })
+  },
+} as const satisfies Chain

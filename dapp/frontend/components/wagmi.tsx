@@ -1,5 +1,5 @@
 "use client";
-import { polygonAmoy } from "../../chain/polygonAmoy";
+import { polygonAmoy } from "../chain/polygonAmoy";
 
 import {
   createWeb3Modal,
@@ -44,6 +44,7 @@ const chains = [
   polygonMumbai,
   holesky,
   arbitrumSepolia,
+  polygonAmoy,
 ];
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
