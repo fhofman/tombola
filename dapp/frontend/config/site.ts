@@ -25,7 +25,7 @@ export const siteConfig = {
       token: "0x0",
     },
     polygonAmoy: {
-      tombola: "0xba35c7b4ec26cb47b0f586017a92a700b00d8283",
+      tombola: "0x4e33b5e3b94c6f95CCf2cfE543865a6e906bEE3A",
       token: "0x0",
     },
     mainnet: {
