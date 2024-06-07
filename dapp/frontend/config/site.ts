@@ -21,7 +21,7 @@ export const siteConfig = {
   ],
   contracts: {
     sepolia: {
-      tombola: "0x950738c82B70614DEf3e8EC31066a405E9468f0c",
+      tombola: "0xc6487525441034C9faA88e85D01853F4D64673Ea",
       token: "0x0",
     },
     polygonAmoy: {
