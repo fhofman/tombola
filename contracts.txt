@@ -1,3 +1,12 @@
-This version is good to show same draws: But the claim is not work.
+This contract is the one is in the url : https://tombolapp.netlify.app/play
+The game is draw one per day. 
+Sepolia Final : 0x950738c82B70614DEf3e8EC31066a405E9468f0c
+Owner: 0xd06a06DBBC2E81c6Ee00FE1e192fC00b9883D878
+Subscriotion admin: 0xf4f0bf9ec59f3d8e8bdcbc2fb3a8995fea6dab73
 
-0x122603CE3746784228141473CaC5e72DF3E82A27
+
+https://tombolappAmoy.netlify.app/play 
+Amoy Final: 0x4e33b5e3b94c6f95CCf2cfE543865a6e906bEE3A
+Owner: 0x06E4f9201c3bf04A1D43f7a017ed943c8551a9a4
+Subscriotion admin: 0x06e4f9201c3bf04a1d43f7a017ed943c8551a9a4 
+
