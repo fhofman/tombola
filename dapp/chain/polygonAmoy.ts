@@ -3,7 +3,7 @@ import { Chain } from 'wagmi'
 export const polygonAmoy = {
   id: 80_002,
   name: 'Polygon Amoy',
-  network: 'polygonAmoy',
+  network: 'polygon-amoy',
   nativeCurrency: {
     decimals: 18,
     name: 'MATIC',
