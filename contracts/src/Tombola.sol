@@ -38,6 +38,11 @@ contract Tombola is VRFConsumerBaseV2Plus {
     mapping(address => uint256) public userClaim;
 
     /**
+     * @notice The address of the automation.
+     */
+    address public automationAddress;
+
+    /**
      * @notice The commission percentage charged by the contract.
      */
     uint64 public commission;
@@ -67,6 +72,14 @@ contract Tombola is VRFConsumerBaseV2Plus {
     uint32 numWords = 1;
 
     uint256 private randomNumber;
+
+    modifier onlyOwnerOrAutomationForward() {
+        require(
+            msg.sender == owner() || msg.sender == automationAddress,
+            "Only owner or automation forward"
+        );
+        _;
+    }
 
     //uint256 private requestId;
 
@@ -302,7 +315,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
      */
     function generatePseudoRandom(
         bool enableNativePayment
-    ) external onlyOwner returns (uint256 requestId) {
+    ) external onlyOwnerOrAutomationForward returns (uint256 requestId) {
         //TODO: UNCOMMENT FOR PRODUCTION
         uint256 currentDay = (block.timestamp - 1 days) / 1 days;
         //TODO
@@ -358,6 +371,10 @@ contract Tombola is VRFConsumerBaseV2Plus {
         require(s_requests[_requestId].exists, "request not found");
         RequestStatus memory request = s_requests[_requestId];
         return (request.fulfilled, request.randomWords);
+    }
+
+    function setAutomationAddress(address _automationAddress) public onlyOwner {
+        automationAddress = _automationAddress;
     }
 
     function setCallbackGasLimit(uint32 _callbackGasLimit) public onlyOwner {
