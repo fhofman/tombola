@@ -82,9 +82,6 @@ contract Tombola is VRFConsumerBaseV2Plus {
     // Cannot exceed VRFV2Wrapper.getConfig().maxNumWords.
     uint32 numWords = 1;
 
-    // The commission amount accumulated
-    uint256 public commissionAmount;
-
     uint256 private randomNumber;
 
     modifier onlyOwnerOrAutomationForward() {
@@ -217,8 +214,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
         // only accumulated balance without todays deposits need to be distributed
         uint256 accBal = (accumBalance - incomeRoundAmount[currentDay]);
         uint256 balanceWithoutCommissionRound = (accBal *
-            uint256(100) -
-            uint256(commission)) / uint256(100);
+            (uint256(100) - uint256(commission))) / uint256(100);
         uint256 amountToDistributeFinal = balanceWithoutCommissionRound /
             nPlaysNumberDay[currentDay][guessNumber];
         for (uint256 i = 0; i < nPlaysNumberDay[currentDay][guessNumber]; ) {
@@ -229,7 +225,6 @@ contract Tombola is VRFConsumerBaseV2Plus {
                 i++;
             }
         }
-        commissionAmount += accBal - balanceWithoutCommissionRound;
         accumBalance = incomeRoundAmount[currentDay];
     }
 
@@ -247,7 +242,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
      * @dev Function for the owner to withdraw the balance of the Tombola contract.
      */
     function withdraw() external onlyOwner {
-        payable(msg.sender).transfer(commissionAmount);
+        payable(msg.sender).transfer(address(this).balance - accumBalance);
     }
 
     /**
@@ -255,7 +250,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
      * @param _address The address to which the balance will be transferred.
      */
     function withdrawTo(address _address) external onlyOwner {
-        payable(_address).transfer(commissionAmount);
+        payable(_address).transfer(address(this).balance - accumBalance);
     }
 
     /**
