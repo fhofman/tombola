@@ -27,7 +27,7 @@ import {
 import { formatEther, parseEther } from "ethers";
 const min = 1,
   //TODO ver como hacer para que este dato venga del contrato
-  max = 5; //dataS && dataS[NUMBER_RANGE]?.result;
+  max = 10; //dataS && dataS[NUMBER_RANGE]?.result;
 const FormSchema = z.object({
   guessNumber: z.coerce
     .number()
@@ -49,6 +49,7 @@ export function Play() {
   const COMMISSION = 0;
   const PLAY_COST = 1;
   const NUMBER_RANGE = 2;
+  const JACKPOT = 3;
   const contractAddress = process.env.CONTRACT_ADDRESS;
   console.log("Contract ", contractAddress);
   const tombolaContract = {
@@ -68,6 +69,10 @@ export function Play() {
       {
         ...tombolaContract,
         functionName: "drawNumbersRange",
+      },
+      {
+        ...tombolaContract,
+        functionName: "accumBalance",
       },
     ],
   });
@@ -96,9 +101,32 @@ export function Play() {
     });
   }
 
+  function Jackpot() {
+    if (dataS && dataS[JACKPOT].status != "failure") {
+      return (
+        <h3
+          className={
+            dataS[JACKPOT]?.result > 5 * 1000000000000000000
+              ? "text-3xl font-bold text-center pt-3"
+              : "text-2l font-bold text-center pt-3"
+          }
+        >
+          Jackpot : {formatEther(dataS[JACKPOT]?.result) ?? 0} matic
+        </h3>
+      );
+    } else {
+      return;
+      <h2 className="text-3xl font-bold text-center pt-3">Not Jackpot yet!</h2>;
+    }
+  }
+
   return (
     <div className="container mx-auto">
       <h1 className="text-3xl font-bold text-center pt-3">Guess your number</h1>
+      <Jackpot />
+      <h4 className="text-2l text-center pt-3">
+        Platform Commission: {dataS && dataS[COMMISSION]?.result?.toString()} %
+      </h4>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -119,7 +147,8 @@ export function Play() {
                     <strong>
                       You have to chose a number from 1 to{" "}
                       {dataS && dataS[NUMBER_RANGE]?.result?.toString()} betting{" "}
-                      {dataS && formatEther(dataS[PLAY_COST]?.result ?? 0)} eth.
+                      {dataS && formatEther(dataS[PLAY_COST]?.result ?? 0)}{" "}
+                      matic.
                     </strong>
                   </div>
                 </FormDescription>
@@ -127,10 +156,7 @@ export function Play() {
               </FormItem>
             )}
           />
-          <div>
-            Platform Commission:{" "}
-            {dataS && dataS[COMMISSION]?.result?.toString()} %
-          </div>
+
           {isLoading && <div>Loading...</div>}
           {isSuccess && <div>Success!</div>}
           <Button
