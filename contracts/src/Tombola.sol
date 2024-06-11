@@ -37,8 +37,16 @@ contract Tombola is VRFConsumerBaseV2Plus {
      */
     mapping(address => uint256) public userClaim;
 
-    // The income amount of the round day -> accumulated amount x round
+    /**
+     * @notice Amount played per day.
+     * @dev format: day -> amount
+     */
     mapping(uint256 => uint256) public incomeRoundAmount;
+
+    /**
+     * @notice Accumulates amount to be distributed.
+     */
+    uint256 public accumBalance;
 
     /**
      * @notice The address of the automation.
@@ -79,9 +87,6 @@ contract Tombola is VRFConsumerBaseV2Plus {
     // Cannot exceed VRFV2Wrapper.getConfig().maxNumWords.
     uint32 numWords = 1;
 
-    // The commission amount accumulated
-    uint256 public commissionAmount;
-
     uint256 private randomNumber;
 
     modifier onlyOwnerOrAutomationForward() {
@@ -91,8 +96,6 @@ contract Tombola is VRFConsumerBaseV2Plus {
         );
         _;
     }
-
-    //uint256 private requestId;
 
     event RegisteredPlay(
         uint256 indexed currentDay,
@@ -195,6 +198,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
         plays[currentDay][number][currentPlay] = msg.sender;
         emit RegisteredPlay(currentDay, number, msg.sender);
         incomeRoundAmount[currentDay] += msg.value;
+        accumBalance += msg.value;
     }
 
     /**
@@ -212,9 +216,10 @@ contract Tombola is VRFConsumerBaseV2Plus {
             emit NoWinnersToday(currentDay);
             return;
         }
-        uint256 balanceWithoutCommissionRound = (incomeRoundAmount[currentDay] *
-            (uint256(100)) -
-            uint256(commission)) / uint256(100);
+        // only accumulated balance without todays deposits need to be distributed
+        uint256 accBal = (accumBalance - incomeRoundAmount[currentDay]);
+        uint256 balanceWithoutCommissionRound = (accBal *
+            (uint256(100) - uint256(commission))) / uint256(100);
         uint256 amountToDistributeFinal = balanceWithoutCommissionRound /
             nPlaysNumberDay[currentDay][guessNumber];
         for (uint256 i = 0; i < nPlaysNumberDay[currentDay][guessNumber]; ) {
@@ -225,10 +230,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
                 i++;
             }
         }
-        commissionAmount +=
-            incomeRoundAmount[currentDay] -
-            balanceWithoutCommissionRound;
-        incomeRoundAmount[currentDay] = 0;
+        accumBalance = incomeRoundAmount[currentDay];
     }
 
     function claim() public payable {
@@ -245,7 +247,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
      * @dev Function for the owner to withdraw the balance of the Tombola contract.
      */
     function withdraw() external onlyOwner {
-        payable(msg.sender).transfer(commissionAmount);
+        payable(msg.sender).transfer(address(this).balance - accumBalance);
     }
 
     /**
@@ -253,7 +255,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
      * @param _address The address to which the balance will be transferred.
      */
     function withdrawTo(address _address) external onlyOwner {
-        payable(_address).transfer(commissionAmount);
+        payable(_address).transfer(address(this).balance - accumBalance);
     }
 
     /**
