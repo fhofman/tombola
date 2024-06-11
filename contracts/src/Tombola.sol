@@ -168,6 +168,9 @@ contract Tombola is VRFConsumerBaseV2Plus {
         s_subscriptionId = _subscriptionId;
     }
 
+    /**
+     * @dev Fallback function to receive Ether.
+     */
     receive() external payable {
         emit Received(msg.sender, msg.value);
     }
@@ -226,6 +229,9 @@ contract Tombola is VRFConsumerBaseV2Plus {
         accumBalance = incomeRoundAmount[currentDay];
     }
 
+    /**
+     * @dev Function for users to claim their winnings.
+     */
     function claim() public payable {
         if (userClaim[msg.sender] == 0) {
             revert ErrorNothingToClaim();

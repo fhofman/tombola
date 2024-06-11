@@ -49,6 +49,7 @@ export function Play() {
   const COMMISSION = 0;
   const PLAY_COST = 1;
   const NUMBER_RANGE = 2;
+  const JACKPOT = 3;
   const contractAddress = process.env.CONTRACT_ADDRESS;
   console.log("Contract ", contractAddress);
   const tombolaContract = {
@@ -68,6 +69,10 @@ export function Play() {
       {
         ...tombolaContract,
         functionName: "drawNumbersRange",
+      },
+      {
+        ...tombolaContract,
+        functionName: "accumBalance",
       },
     ],
   });
@@ -96,9 +101,29 @@ export function Play() {
     });
   }
 
+  function Jackpot() {
+    if (dataS && dataS[JACKPOT].status != "failure") {
+      return (
+        <h3
+          className={
+            dataS[JACKPOT]?.result > 5 * 1000000000000000000
+              ? "text-3xl font-bold text-center pt-3"
+              : "text-2l font-bold text-center pt-3"
+          }
+        >
+          Jackpot : {formatEther(dataS[JACKPOT]?.result) ?? 0} matic
+        </h3>
+      );
+    } else {
+      return;
+      <h2 className="text-3xl font-bold text-center pt-3">Not Jackpot yet!</h2>;
+    }
+  }
+
   return (
     <div className="container mx-auto">
       <h1 className="text-3xl font-bold text-center pt-3">Guess your number</h1>
+      <Jackpot />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -119,7 +144,8 @@ export function Play() {
                     <strong>
                       You have to chose a number from 1 to{" "}
                       {dataS && dataS[NUMBER_RANGE]?.result?.toString()} betting{" "}
-                      {dataS && formatEther(dataS[PLAY_COST]?.result ?? 0)} eth.
+                      {dataS && formatEther(dataS[PLAY_COST]?.result ?? 0)}{" "}
+                      matic.
                     </strong>
                   </div>
                 </FormDescription>

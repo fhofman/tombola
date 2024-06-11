@@ -1,42 +1,18 @@
-  export const DRAWS_ABI = [
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "draws",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-]
-
-export const GET_DAY_BY_BLOCK_NUMBER_ABI = [
-    {
+  export const TOMBOLA_ABI = [
+	{
 		"inputs": [],
-		"name": "getDayByBlockNumber",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
+		"name": "acceptOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
-]
-
-export const TOMBOLA_ABI = [
+	{
+		"inputs": [],
+		"name": "claim",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
 	{
 		"inputs": [
 			{
@@ -175,8 +151,34 @@ export const TOMBOLA_ABI = [
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "enableNativePayment",
+				"type": "bool"
+			}
+		],
+		"name": "generatePseudoRandom",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "requestId",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
-		"inputs": [],
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "currentDay",
+				"type": "uint256"
+			}
+		],
 		"name": "NoWinnersToday",
 		"type": "event"
 	},
@@ -219,6 +221,19 @@ export const TOMBOLA_ABI = [
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "number",
+				"type": "uint256"
+			}
+		],
+		"name": "play",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -230,6 +245,24 @@ export const TOMBOLA_ABI = [
 		],
 		"name": "RandomNumber",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "requestId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "randomWords",
+				"type": "uint256[]"
+			}
+		],
+		"name": "rawFulfillRandomWords",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -314,6 +347,97 @@ export const TOMBOLA_ABI = [
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_automationAddress",
+				"type": "address"
+			}
+		],
+		"name": "setAutomationAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint32",
+				"name": "_callbackGasLimit",
+				"type": "uint32"
+			}
+		],
+		"name": "setCallbackGasLimit",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "_commission",
+				"type": "uint64"
+			}
+		],
+		"name": "setCommission",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_vrfCoordinator",
+				"type": "address"
+			}
+		],
+		"name": "setCoordinator",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "_drawNumbersRange",
+				"type": "uint64"
+			}
+		],
+		"name": "setDrawNumbersRange",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint128",
+				"name": "_playCost",
+				"type": "uint128"
+			}
+		],
+		"name": "setPlayCost",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -334,16 +458,52 @@ export const TOMBOLA_ABI = [
 	},
 	{
 		"inputs": [],
-		"name": "acceptOwnership",
+		"name": "withdraw",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "claim",
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "withdrawTo",
 		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"stateMutability": "payable",
+		"type": "receive"
+	},
+	{
+		"inputs": [],
+		"name": "accumBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "automationAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -389,25 +549,6 @@ export const TOMBOLA_ABI = [
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bool",
-				"name": "enableNativePayment",
-				"type": "bool"
-			}
-		],
-		"name": "generatePseudoRandom",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "requestId",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -491,6 +632,25 @@ export const TOMBOLA_ABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "incomeRoundAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "keyHash",
 		"outputs": [
@@ -554,19 +714,6 @@ export const TOMBOLA_ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "number",
-				"type": "uint256"
-			}
-		],
-		"name": "play",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "playCost",
 		"outputs": [
@@ -606,24 +753,6 @@ export const TOMBOLA_ABI = [
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "requestId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "randomWords",
-				"type": "uint256[]"
-			}
-		],
-		"name": "rawFulfillRandomWords",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -698,84 +827,6 @@ export const TOMBOLA_ABI = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint32",
-				"name": "_callbackGasLimit",
-				"type": "uint32"
-			}
-		],
-		"name": "setCallbackGasLimit",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint64",
-				"name": "_commission",
-				"type": "uint64"
-			}
-		],
-		"name": "setCommission",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_vrfCoordinator",
-				"type": "address"
-			}
-		],
-		"name": "setCoordinator",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint64",
-				"name": "_drawNumbersRange",
-				"type": "uint64"
-			}
-		],
-		"name": "setDrawNumbersRange",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint128",
-				"name": "_playCost",
-				"type": "uint128"
-			}
-		],
-		"name": "setPlayCost",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
@@ -791,42 +842,5 @@ export const TOMBOLA_ABI = [
 		],
 		"stateMutability": "view",
 		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
-		"name": "withdrawTo",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "wrapperAddress",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
 	}
 ]
