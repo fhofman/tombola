@@ -54,11 +54,6 @@ contract Tombola is VRFConsumerBaseV2Plus {
     address public automationAddress;
 
     /**
-     * @notice The address of the automation.
-     */
-    address public automationAddress;
-
-    /**
      * @notice The commission percentage charged by the contract.
      */
     uint64 public commission;
@@ -146,8 +141,6 @@ contract Tombola is VRFConsumerBaseV2Plus {
     error ErrorZeroDrawNumbersRange();
     error ErrorZeroPlayCost();
 
-    address public constant wrapperAddress =
-        0x195f15F2d49d693cE265b4fB0fdDbE15b1850Cc1;
     /**
      * @dev Constructor function for the Tombola contract.
      * @param _commission The commission percentage to be charged on each play.
