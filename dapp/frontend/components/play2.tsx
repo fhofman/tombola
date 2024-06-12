@@ -17,6 +17,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -74,10 +82,19 @@ export function Play() {
         ...tombolaContract,
         functionName: "accumBalance",
       },
+      {
+        ...tombolaContract,
+        functionName: "getDayByBlockNumber",
+      },
     ],
   });
-  console.log("dataS ", dataS);
 
+  console.log("dataS ", dataS);
+  const numRange = dataS && dataS[NUMBER_RANGE];
+  let numbersRange: number[] = Array.from(
+    { length: numRange },
+    (_, i) => i + 1
+  );
   const { config } = usePrepareContractWrite({
     ...tombolaContract,
     functionName: "play",
@@ -170,6 +187,20 @@ export function Play() {
           </Button>
         </form>
       </Form>
+
+      <Table>
+        <TableCaption>Numbers Played in this round</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Number</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {numbersRange.map((row, idx) => (
+            <PlayedRow key={idx} num={row} />
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
