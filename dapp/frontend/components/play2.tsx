@@ -2,9 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { TOMBOLA_ABI } from "./abi.read";
+import Moralis from "moralis";
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,22 +18,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 
 import {
   useContractWrite,
   usePrepareContractWrite,
   useContractReads,
+  useAccount,
 } from "wagmi";
 import { formatEther, parseEther } from "ethers";
+import { parseAbiItem } from "viem";
+import { publicClient } from "./client";
+
 const min = 1,
   //TODO ver como hacer para que este dato venga del contrato
   max = 10; //dataS && dataS[NUMBER_RANGE]?.result;
@@ -43,11 +40,13 @@ const FormSchema = z.object({
     .lte(max, { message: `Must be less than or equal to ${max}` }),
 });
 
-export function Play() {
+export function Play(moralisReady: any) {
+  const { address, connector, isConnected } = useAccount();
   const { toast } = useToast();
   const [connected, setConnected] = useState(false);
   const [guessNumber, setGuessNumber] = useState(0);
   const [guessNumberRange, setGuessNumberRange] = useState(0);
+  const [logs, setLogs] = useState([]);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -58,6 +57,7 @@ export function Play() {
   const PLAY_COST = 1;
   const NUMBER_RANGE = 2;
   const JACKPOT = 3;
+  const CURRENT_DAY = 4;
   const contractAddress = process.env.CONTRACT_ADDRESS;
   console.log("Contract ", contractAddress);
   const tombolaContract = {
@@ -90,11 +90,21 @@ export function Play() {
   });
 
   console.log("dataS ", dataS);
-  const numRange = dataS && dataS[NUMBER_RANGE];
-  let numbersRange: number[] = Array.from(
-    { length: numRange },
-    (_, i) => i + 1
-  );
+  const getLogs = async () => {
+    try {
+      const log = await Moralis.EvmApi.events.getContractLogs({
+        chain: "0x89",
+        topic0:
+          "0xa5e4f5e57d0b9df074c905ee3fe7999e091da2f0953b3ee1ed0b47db16c20233",
+        order: "DESC",
+        address: contractAddress,
+      });
+      setLogs(log.raw.result[0].topic2);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const { config } = usePrepareContractWrite({
     ...tombolaContract,
     functionName: "play",
@@ -136,6 +146,10 @@ export function Play() {
       <h2 className="text-3xl font-bold text-center pt-3">Not Jackpot yet!</h2>;
     }
   }
+
+  useEffect(() => {
+    if (moralisReady) getLogs();
+  }, [moralisReady]);
 
   return (
     <div className="container mx-auto">
@@ -187,20 +201,7 @@ export function Play() {
           </Button>
         </form>
       </Form>
-
-      <Table>
-        <TableCaption>Numbers Played in this round</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Number</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {numbersRange.map((row, idx) => (
-            <PlayedRow key={idx} num={row} />
-          ))}
-        </TableBody>
-      </Table>
+      {logs}
     </div>
   );
 }

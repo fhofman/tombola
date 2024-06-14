@@ -38,7 +38,7 @@ import { Input } from "@/components/ui/input";
 //import { toast } from "@/components/ui/use-toast";
 import { useToast } from "@/components/ui/use-toast";
 
-export function Play() {
+export function Play(moralisReady: boolean) {
   const { toast } = useToast();
 
   const { chain } = useNetwork();
