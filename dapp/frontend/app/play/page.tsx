@@ -1,5 +1,5 @@
 "use client";
-import { Play } from "@/components/Play.1";
+import { Play } from "@/components/play2";
 import Moralis from "moralis";
 import { useState, useEffect } from "react";
 

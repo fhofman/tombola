@@ -9,7 +9,8 @@ import {
   TableCell,
 } from "@/components/ui/table";
 
-export function YourNumbers(moralisReady: any) {
+export function YourNumbers(logs: any) {
+  console.log("logs %o", logs.logs);
   return (
     <div>
       <h3 className="text-3xl font-bold text-center pt-3">Your numbers</h3>
