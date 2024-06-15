@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { TOMBOLA_ABI } from "./abi.read";
+import { format } from "date-fns";
 import Moralis from "moralis";
 
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -29,6 +29,7 @@ import {
 import { formatEther, parseEther } from "ethers";
 import { parseAbiItem } from "viem";
 import { publicClient } from "./client";
+import { YourNumbers } from "./yourNumbers";
 
 const min = 1,
   //TODO ver como hacer para que este dato venga del contrato
@@ -96,10 +97,17 @@ export function Play(moralisReady: any) {
         chain: "0x89",
         topic0:
           "0xa5e4f5e57d0b9df074c905ee3fe7999e091da2f0953b3ee1ed0b47db16c20233",
+        //topic2: "0x000000000000000000000000" + address.substr(2),
+        //topic2: "0xf4f0bf9ec59f3d8e8bdcbc2fb3a8995fea6dab73",
         order: "DESC",
         address: contractAddress,
       });
-      setLogs(log.raw.result[0].topic2);
+      const filteredLogs = log.raw.result.filter(
+        (item: any) =>
+          "0x" + item.topic3.substr(26).toLowerCase() == address.toLowerCase()
+      );
+
+      setLogs(filteredLogs);
     } catch (e) {
       console.error(e);
     }
@@ -201,7 +209,8 @@ export function Play(moralisReady: any) {
           </Button>
         </form>
       </Form>
-      {logs}
+      <h3 className="text-3xl font-bold text-center pt-3">Your numbers</h3>
+      <YourNumbers logs={logs} />
     </div>
   );
 }
