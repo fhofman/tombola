@@ -36,8 +36,6 @@ import {
   useAccount,
 } from "wagmi";
 import { formatEther, parseEther } from "ethers";
-import { parseAbiItem } from "viem";
-import { publicClient } from "./client";
 import { YourNumbers } from "./yourNumbers";
 
 const min = 1,
@@ -115,7 +113,6 @@ export function Play(moralisReady: any) {
         (item: any) =>
           "0x" + item.topic3.substr(26).toLowerCase() == address.toLowerCase()
       );
-      console.log("filteredLogs ", filteredLogs);
       setLogs(filteredLogs);
     } catch (e) {
       console.error(e);

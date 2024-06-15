@@ -24,6 +24,7 @@ const nextConfig = {
         NEXT_PUBLIC_PROJECT_ID: process.env.NEXT_PUBLIC_PROJECT_ID,
         CHAIN: process.env.CHAIN,
         CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS,
+        API_MORALIS: process.env.API_MORALIS,
     },
     typescript: {
         // !! WARN !!

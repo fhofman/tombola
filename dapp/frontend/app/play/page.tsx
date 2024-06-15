@@ -8,8 +8,7 @@ export default function DashboardPage() {
 
   const initMoralis = async () => {
     await Moralis.start({
-      apiKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImQ3Mjk5ZWExLTczYmEtNDU2Ni1iYmRhLTUzMTQ5ZGEyZDFlOSIsIm9yZ0lkIjoiMjU4MTAwIiwidXNlcklkIjoiMjYyMDkxIiwidHlwZUlkIjoiNDRhMDFiYjMtYTUyOC00NDg0LWJkOWUtNWZhYjI2NDQxMzViIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE2ODk5NjMzMzcsImV4cCI6NDg0NTcyMzMzN30.rHUuW5Au4kTXh_cesSqhoUgWwDdLjNiBZcLNezVPRdU",
+      apiKey: process.env.API_MORALIS,
     });
     setMoralisReady(true);
   };
