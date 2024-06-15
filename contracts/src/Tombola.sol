@@ -204,16 +204,17 @@ contract Tombola is VRFConsumerBaseV2Plus {
      */
     //TODO dejarla internal luego de la prueba
     function distribute() internal {
-        uint256 currentDay = (block.timestamp - 1 days) / 1 days;
+        uint256 yesterday = (block.timestamp - 1 days) / 1 days;
+        uint256 today = (block.timestamp) / 1 days;
         //TEST
         //uint256 currentDay = (block.timestamp) / 1 days;
-        uint256 guessNumber = draws[currentDay];
-        if (nPlaysNumberDay[currentDay][guessNumber] == 0) {
-            emit NoWinnersToday(currentDay);
+        uint256 guessNumber = draws[yesterday];
+        if (nPlaysNumberDay[yesterday][guessNumber] == 0) {
+            emit NoWinnersToday(yesterday);
             return;
         }
         // only accumulated balance without todays deposits need to be distributed
-        uint256 accBal = (accumBalance - incomeRoundAmount[currentDay]);
+        uint256 accBal = (accumBalance - incomeRoundAmount[today]);
         uint256 balanceWithoutCommissionRound = (accBal *
             (uint256(100) - uint256(commission))) / uint256(100);
         uint256 amountToDistributeFinal = balanceWithoutCommissionRound /
@@ -226,7 +227,7 @@ contract Tombola is VRFConsumerBaseV2Plus {
                 i++;
             }
         }
-        accumBalance = incomeRoundAmount[currentDay];
+        accumBalance = incomeRoundAmount[today];
     }
 
     /**
