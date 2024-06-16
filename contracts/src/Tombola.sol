@@ -218,10 +218,10 @@ contract Tombola is VRFConsumerBaseV2Plus {
         uint256 balanceWithoutCommissionRound = (accBal *
             (uint256(100) - uint256(commission))) / uint256(100);
         uint256 amountToDistributeFinal = balanceWithoutCommissionRound /
-            nPlaysNumberDay[currentDay][guessNumber];
-        for (uint256 i = 0; i < nPlaysNumberDay[currentDay][guessNumber]; ) {
+            nPlaysNumberDay[yesterday][guessNumber];
+        for (uint256 i = 0; i < nPlaysNumberDay[yesterday][guessNumber]; ) {
             userClaim[
-                plays[currentDay][guessNumber][i]
+                plays[yesterday][guessNumber][i]
             ] += amountToDistributeFinal;
             unchecked {
                 i++;

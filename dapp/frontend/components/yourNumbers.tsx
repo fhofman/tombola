@@ -25,7 +25,7 @@ export function YourNumbers(logs: any) {
         </TableHeader>
         <TableBody>
           {logs.map((row, idx) => (
-            <TableRow>
+            <TableRow key={idx}>
               <TableCell className="text-center">
                 {parseInt(row.topic2)}
               </TableCell>
