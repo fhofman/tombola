@@ -8,6 +8,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import { format } from "date-fns";
 
 export function YourNumbers(logs: any) {
   console.log("logs %o", logs.logs);
@@ -24,7 +25,7 @@ export function YourNumbers(logs: any) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {logs.map((row, idx) => (
+          {logs.logs.map((row, idx) => (
             <TableRow key={idx}>
               <TableCell className="text-center">
                 {parseInt(row.topic2)}
