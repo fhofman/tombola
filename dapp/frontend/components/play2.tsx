@@ -215,32 +215,7 @@ export function Play(moralisReady: any) {
           </Button>
         </form>
       </Form>
-      <Table>
-        <TableCaption>The numbers you choose</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[5%]">Number</TableHead>
-            <TableHead>Number</TableHead>
-            <TableHead>User</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {logs.map((row, idx) => (
-            <TableRow>
-              <TableCell className="text-center">
-                {parseInt(row.topic2)}
-              </TableCell>
-              <TableCell>
-                {format(
-                  new Date(parseInt(row.topic1) * 86400 * 1000),
-                  "dd-MM-yyyy"
-                ).toString()}
-              </TableCell>
-              <TableCell>{"0x" + row.topic3.substr(26)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <YourNumbers logs={logs} />
     </div>
   );
 }
