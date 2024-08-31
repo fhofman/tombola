@@ -29,7 +29,7 @@ export const siteConfig = {
       token: "0x0",
     },
     polygon: {
-      tombola: "0x445e2bf606dc4408a8ecf57e9409610528dfdde2",
+      tombola: "0xA2C9dFE9dAc10131cA5573a8d2E33b0Ba74c96CC",
       token: "0x0",
     },
 

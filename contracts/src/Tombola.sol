@@ -126,7 +126,9 @@ contract Tombola is VRFConsumerBaseV2Plus {
     // For a list of available gas lanes on each network,
     // see https://docs.chain.link/docs/vrf/v2-5/supported-networks
     bytes32 public keyHash =
-        0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae; // sepolia
+        0x0ffbbd0c1c18c0263dd778dadd1d64240d7bc338d95fec1cf0473928ca7eaf9e; // Polygon
+    //bytes32 public keyHash =
+    //    0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae; // sepolia
     //bytes32 public keyHash =
     //0xc799bd1e3bd4d1a41cd4968997a4e03dfd2a3c7c04b695881138580163f42887; // fuji
     //bytes32 public keyHash = 0x816bedba8a50b294e5cbd47842baf240c2385f2eaf719edbd4f250a137a8c899; // Amoy
@@ -154,7 +156,8 @@ contract Tombola is VRFConsumerBaseV2Plus {
         uint256 _subscriptionId
     )
         //ConfirmedOwner(msg.sender)
-        VRFConsumerBaseV2Plus(0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B) // Sepolia
+        VRFConsumerBaseV2Plus(0xec0Ed46f36576541C75739E915ADbCb3DE24bD77) // Polygon
+    //VRFConsumerBaseV2Plus(0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B) // Sepolia
     //VRFConsumerBaseV2Plus(0x5C210eF41CD1a72de73bF76eC39637bB0d3d7BEE) // Fuji
     //VRFConsumerBaseV2Plus(0x343300b5d84D444B2ADc9116FEF1bED02BE49Cf2) //Amoy
     {
