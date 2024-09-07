@@ -34,9 +34,12 @@ import {
   usePrepareContractWrite,
   useContractReads,
   useAccount,
+  useFeeData,
 } from "wagmi";
 import { formatEther, parseEther } from "ethers";
 import { YourNumbers } from "./yourNumbers";
+import { is, tr } from "date-fns/locale";
+import { setupFsCheck } from "next/dist/server/lib/router-utils/filesystem";
 
 const min = 1,
   //TODO ver como hacer para que este dato venga del contrato
@@ -102,6 +105,7 @@ export function Play(moralisReady: any) {
     try {
       const log = await Moralis.EvmApi.events.getContractLogs({
         chain: "0x89",
+        //chain: "0xaa36a7",
         topic0:
           "0xa5e4f5e57d0b9df074c905ee3fe7999e091da2f0953b3ee1ed0b47db16c20233",
         //topic2: "0x000000000000000000000000" + address.substr(2),
@@ -126,7 +130,7 @@ export function Play(moralisReady: any) {
     value: dataS && BigInt(dataS[PLAY_COST]?.result?.toString()),
     enabled: Boolean(form.getValues().guessNumber) && dataS[PLAY_COST]?.result,
   });
-  const { isLoading, isSuccess, write } = useContractWrite(config);
+  let { isLoading, isSuccess, write } = useContractWrite(config);
   console.log("dataS ", dataS);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -164,6 +168,10 @@ export function Play(moralisReady: any) {
   useEffect(() => {
     if (moralisReady) getLogs();
   }, [moralisReady]);
+
+  useEffect(() => {
+    if (isSuccess) console.log("Should refresh!");
+  }, [isSuccess]);
 
   return (
     <div className="container mx-auto">

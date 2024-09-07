@@ -19,6 +19,7 @@ import {
   polygonMumbai,
 } from "wagmi/chains";
 import { useTheme } from "next-themes";
+import NetworkSwitcher from "./network-switcher";
 
 // 1. Get projectID at https://cloud.walletconnect.com
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
@@ -35,16 +36,26 @@ const metadata = {
 };
 
 // 2. Configure wagmi client
+const chain = process.env.CHAIN;
+
 const chains = [
-  mainnet,
-  sepolia,
-  optimism,
-  optimismSepolia,
-  polygon,
-  polygonMumbai,
-  holesky,
-  arbitrumSepolia,
-  polygonAmoy,
+  chain == "polygon"
+    ? polygon
+    : chain == "polygonAmoy"
+    ? polygonAmoy
+    : chain == "polygonMumbai"
+    ? polygonMumbai
+    : chain == "optimism"
+    ? optimism
+    : chain == "optimismSepolia"
+    ? optimismSepolia
+    : chain == "sepolia"
+    ? sepolia
+    : chain == "holesky"
+    ? holesky
+    : chain == "arbitrumSepolia"
+    ? arbitrumSepolia
+    : mainnet,
 ];
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
@@ -70,6 +81,7 @@ export function Wagmi({ children }: RootLayoutProps) {
   return (
     <WagmiConfig config={wagmiConfig}>
       <div>{children}</div>
+      <NetworkSwitcher />
     </WagmiConfig>
   );
 }
